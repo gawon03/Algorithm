@@ -1,31 +1,27 @@
 from collections import deque
 
 def solution(begin, target, words):
+    answer = 0
+    visited = [False for _ in range(len(words))] # 방문처리를 위한 list
     
-    if target not in words : 
-        return  0
-    
-    return bfs(begin, target, words)
-
-
-#최소 단계를 찾아야 하므로 bfs
-def bfs(begin, target, words):
-
     queue = deque()
-    queue.append([begin, 0]) #시작 단어와 단계 0으로 초기화
+    queue.append((begin, 0))
     
     while queue:
-        now, step = queue.popleft()
+        word, cnt = queue.popleft()
         
-        if now == target:
-            return step
-        
-        #단어를 모두 체크하면서, 해당 단어가 변경될 수 있는지 체크
-        for word in words:
-            count = 0
-            for i in range(len(now)): #단어의 길이만큼 반복하여
-                if now[i] != word[i]: #단어에 알파벳 한개씩 체크하기
-                    count += 1
-                    
-            if count == 1: 
-                queue.append([word, step+1])
+        if word == target:
+            answer = cnt
+            break
+            
+        for i in range(len(words)):
+            cnt_temp = 0
+            if not visited[i]: # 방문하지 않았다면
+                for j in range(len(word)): # 철자 하나씩 확인
+                    if word[j] != words[i][j]:
+                        cnt_temp += 1
+                if cnt_temp == 1: # 철자 하나만 다르다면 변경가능
+                    queue.append((words[i], cnt+1)) # queue에 추가
+                    visited[i] = True # 방문 처리
+    return answer
+
