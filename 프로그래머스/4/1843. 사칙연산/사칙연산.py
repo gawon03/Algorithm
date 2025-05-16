@@ -20,17 +20,17 @@ def solution(arr):
     ops = [x for x in arr[1::2]]
     
     for i in range(len(nums)):
-        M[(i, i)] = nums[i]
+        M[(i, i)] = nums[i]            # M[(a, b)] : nums[a]부터 nums[b]까지 괄호로 묶었을 때 가능한 최댓값
         m[(i, i)] = nums[i]
     
-    for d in range(1, len(nums)):
-        for i in range(len(nums)):
-            j = i + d
+    for d in range(1, len(nums)):      # 구간 길이 d : 1부터 시작
+        for i in range(len(nums)):     # 구간의 시작 인덱스
+            j = i + d                  # 구간의 끝 인덱스
             if j >= len(nums):
                 continue
             
             maxcandidates, mincandidates = [], []
-            for k in range(i+1, j+1):
+            for k in range(i+1, j+1):  # 연산자 기준으로 나눌 위치 (구간을 나눠 연산을 수행하는 지점)
                 if ops[k-1] == '-':
                     mx = M[(i, k-1)] - m[(k, j)]
                     mn = m[(i, k-1)] - M[(k, j)]
