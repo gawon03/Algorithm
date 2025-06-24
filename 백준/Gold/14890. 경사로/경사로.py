@@ -1,9 +1,8 @@
-import sys
-N, L = map(int,sys.stdin.readline().split())
+N, L = map(int,input().split())
 pan = []
 for i in range(N):
-    pan.append(list(map(int,sys.stdin.readline().split())))
-
+    pan.append(list(map(int, input().split())))
+    
 answer = 0
 # 경사로를 놓을 수 없는 경우
 # 경사로를 놓은 곳에 또 경사로를 놓는 경우
