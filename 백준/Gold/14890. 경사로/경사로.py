@@ -1,68 +1,50 @@
-n, l = map(int, input().split())
-
-map_ = [list(map(int, input().split())) for _ in range(n)]
-
-def check(i, j):
-    global num, grad_desc, grad_asc, stat, stop
-#    print(i, j, num, cnt, stat)
-    if abs(num - map_[i][j]) > 1:
-        stat = False
-        stop = True
-        return
-    else:
-        # 숫자가 같으면 경사도 놓기
-        if num == map_[i][j]:
-            if grad_desc > 0:
-                grad_desc -= 1
-            else :
-                grad_asc += 1
-        else :
-            # 경사도를 완전히 놓지 못하고 다시 경사가 발생할 경우 실패
-            if grad_desc > 0:
-                stat = False
-                stop = True
-                return
-            else :
-                # 경사가 하강할 경우
-                if num > map_[i][j]:
-                    grad_desc = l - 1
-                    grad_asc = 0
-                # 경사가 상승할 경우
-                else :
-                    if grad_asc < l:
-                        stat = False
-                        stop = True
-                        return
-                    grad_asc = 1
-        num = map_[i][j]
-
+import sys
+N, L = map(int,sys.stdin.readline().split())
+pan = []
+for i in range(N):
+    pan.append(list(map(int,sys.stdin.readline().split())))
 
 answer = 0
+# 경사로를 놓을 수 없는 경우
+# 경사로를 놓은 곳에 또 경사로를 놓는 경우
+# 낮은 칸과 높은 칸의 높이 차이가 1이 아닌 경우 O
+# 낮은 지점의 칸의 높이가 모두 같지 않거나, L개가 연속되지 않은 경우
+# 경사로를 놓다가 범위를 벗어나는 경우
+def if_can_line(line):
+    bri = [False for _ in range(N)]
+    for i in range(1,N):
+        if abs(line[i-1]-line[i])>1:
+            return False
+        else:
+            if (line[i-1]-line[i])==1: #오른쪽으로 다리 놔야함
+                for j in range(L):
+                    
+                    if i+j>=N:
+                        return False
+                    if line[i]!=line[i+j]:
+                        return False
+                    if bri[i+j]==True:
+                        return False
+                    if bri[i+j]==False:
+                        bri[i+j]=True
+                    
+            elif (line[i-1]-line[i])==-1: #왼쪽으로 다리 놔야함
+                for j in range(L):
+                    if i-1-j<0:
+                        return False
+                    if line[i-1]!=line[i-1-j]:
+                        return False
+                    if bri[i-1-j]==True:
+                        return False
+                    if bri[i-j-1]==False:
+                        bri[i-j-1]=True
+    return True
 
-for i in range(n):
-    num = map_[i][0]
-    grad_asc = 1
-    grad_desc = 0
-    stat = True
-    stop = False
-    for j in range(1, n):
-        check(i, j)
-        if stop == True:
-            break
-    if stat == True and grad_desc == 0 :
-        answer += 1
-
-for j in range(n):
-    num = map_[0][j]
-    grad_asc = 1
-    grad_desc = 0
-    stat = True
-    stop = False
-    for i in range(1, n):
-        check(i, j)
-        if stop == True :
-            break
-    if stat == True and grad_desc == 0 :
-        answer += 1
+for i in range(N):
+    if if_can_line(pan[i]):
+        answer+=1
+for j in range(N):
+    if if_can_line([pan[i][j] for i in range(N)]):
+        answer+=1
 
 print(answer)
